@@ -1,0 +1,77 @@
+// =======================================================================
+//                      Comment Codes & Database Rules
+// =======================================================================
+//  TEMP                      : entity should be removed in future
+//  NOTE                      : information to keep in mind about an entity
+//  IMP                       : important instruction, high priority
+//  primary relations         : relations that destroy the model
+//  secondary relations       : relations that only use the model
+//
+//
+//  *almost all table should have the field created_at and updated_at
+//  *always use snake case names for database column
+//  *there should not be any orphan model unless it is meant to be managed by superuser
+// ========================================================================
+
+generator client {
+  provider        = "prisma-client-js"
+  previewFeatures = ["multiSchema"]
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum UserTypes {
+  customer
+  admin
+}
+
+model User {
+  id             String      @id @default(cuid())
+  created_at     DateTime?   @default(now())
+  updated_at     DateTime?   @updatedAt
+  email          String      @unique
+  name           String
+  phone_number   String?
+  email_verified DateTime?
+  agree_t_and_c  Boolean
+  credentials    Credential?
+  avatar         File?
+  type           UserTypes?  @default(customer)
+}
+
+model Credential {
+  id         String    @id @default(cuid())
+  created_at DateTime? @default(now())
+  updated_at DateTime? @updatedAt
+  password   String
+  user       User?     @relation(fields: [user_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  user_id    String?   @unique
+}
+
+// ===================================================================
+//                        Common Schemas
+// ===================================================================
+
+// blacklisting of tokens
+model Token {
+  id         String    @id @default(cuid())
+  created_at DateTime? @default(now())
+  updated_at DateTime? @updatedAt
+  token      String    @unique
+  iat        Int
+  exp        Int
+}
+
+// schema for files
+model File {
+  id      String  @id @default(cuid())
+  name    String
+  size    Int?
+  type    String?
+  url     String?
+  user    User?   @relation(fields: [user_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  user_id String? @unique
+}
