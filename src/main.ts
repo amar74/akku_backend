@@ -8,6 +8,7 @@ import * as dotenv from 'dotenv';
 import { ValidationPipe } from '@nestjs/common/pipes';
 import { ValidationError } from 'class-validator';
 import { JSONPayloadPipe } from './bucket/json-payload.pipe';
+import { HttpExceptionFilter } from './app.exception-filter';
 
 dotenv.config();
 
@@ -29,6 +30,8 @@ async function bootstrap() {
     'access-control-allow-origin',
     'branch_id',
   ];
+
+  app.useGlobalFilters(new HttpExceptionFilter());
 
   app.enableCors({
     origin: allowedOrigins,

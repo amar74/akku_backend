@@ -59,10 +59,7 @@ export class AuthController {
   async signup(@Body() signupDto: SignupDto) {
     const exist = await this.authService.findUserByEmail(signupDto.email);
     if (exist)
-      throw new BadRequestException({
-        success: false,
-        message: 'An account already exists with same email. Please login.',
-      });
+      throw new BadRequestException("An account already exists with same email. Please login.");
 
     let created = await this.authService.createUser(signupDto);
     if (created)

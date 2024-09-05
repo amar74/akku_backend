@@ -100,19 +100,16 @@ export class AuthService {
     });
 
     if (!user) {
-      throw new BadRequestException({
-        success: false,
-        message: 'Invalid credentials',
-      });
+      throw new BadRequestException('Invalid credentials');
     }
 
-    if (!user.email_verified) {
-      throw new BadRequestException({
-        success: false,
-        message:
-          'Please verify your email by following the link sent to you at your email address.',
-      });
-    }
+    // if (!user.email_verified) {
+    //   throw new BadRequestException({
+    //     success: false,
+    //     message:
+    //       'Please verify your email by following the link sent to you at your email address.',
+    //   });
+    // }
 
     let passwordCorrect = await compareString(
       loginDto.password,
@@ -121,10 +118,7 @@ export class AuthService {
 
 
     if (!passwordCorrect) {
-      throw new BadRequestException({
-        success: false,
-        message: 'Invalid credentials',
-      });
+      throw new BadRequestException('Invalid credentials');
     }
 
 
