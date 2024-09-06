@@ -121,7 +121,7 @@ export class AuthController {
         success: false,
         message: 'The user does not exist.',
       });
-
+ if (user.email_verified) throw new BadRequestException("The eamil is already verified.");
     await this.authService.sendEmailAfterSignup({
       email: user.email,
       id: user.id,
